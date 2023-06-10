@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import { getCompeticao } from "../api/api-public"
+import { getCompeticoes, getEquipesIncompletas, getCategorias } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 
 export const PublicContext = createContext();
@@ -8,7 +8,7 @@ export const PublicContext = createContext();
 export const PublicProvider = ({ children }) => {
 
     const getCompeticaoList = async () => {
-        const response = await getCompeticao();
+        const response = await getCompeticoes();
         if (response.status == 200) {
             return response.data;
         } else {
@@ -17,10 +17,32 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
+    const getEquipesIncompletasList = async (competicaoID) => {
+        const response = await getEquipesIncompletas(competicaoID);
+        if (response.status == 200) {
+            return response.data;
+        } else {
+            errorMessage('Não foi possível a realizar busca de atletas da competição.');
+            return false;
+        }
+    };
+
+    const getCategoriasList = async () => {
+        const response = await getCategorias();
+        if (response.status == 200) {
+            return response.data;
+        } else {
+            errorMessage('Não foi possível a realizar busca de categorias.');
+            return false;
+        }
+    };
+
     return (
         <PublicContext.Provider
             value={{
-                getCompeticaoList
+                getCompeticaoList,
+                getEquipesIncompletasList,
+                getCategoriasList
             }}>
             {children}
         </PublicContext.Provider>

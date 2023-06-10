@@ -3,28 +3,44 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import logo from '../../images/logo-playmate.png';
-
-const user = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-const navigation = [
-    { name: 'Competições', href: '', current: true },
-    { name: 'Meus Atletas', href: '/athletes', current: false },
-    { name: 'Minhas Solicitações', href: '/solicitations', current: false },
-]
-const userNavigation = [
-    { name: 'Meu Perfil', href: '#' },
-    { name: 'Sair', href: '#' },
-]
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
+import emptyUser from '../../images/empty-user.webp';
 
 export default function PagesMenu() {
+
+    let user = {
+        name: 'André Cristen',
+        email: 'teste@example.com',
+    }
+
+    let navigation = [];
+    let userNavigation = [];
+
+    if (user) {
+        navigation = [
+            { name: 'Competições', href: '/', current: true },
+            { name: 'Meus Atletas', href: '/athletes', current: false },
+            { name: 'Minhas Solicitações', href: '/solicitations', current: false },
+        ]
+        userNavigation = [
+            { name: 'Meu Perfil', href: '/profile' },
+            { name: 'Sair', href: '/logout' },
+        ]
+    } else {
+        navigation = [
+            { name: 'Competições', href: '/', current: true },
+        ]
+        userNavigation = [
+            { name: 'Login', href: '/login' },
+            { name: 'Registrar-se', href: '/register' },
+        ]
+    }
+
+    
+
+    function classNames(...classes) {
+        return classes.filter(Boolean).join(' ')
+    }
+
     return (
         <Disclosure as="nav" className="bg-purple-50">
             {({ open }) => (
@@ -61,20 +77,15 @@ export default function PagesMenu() {
                             </div>
                             <div className="hidden md:block">
                                 <div className="ml-4 flex items-center md:ml-6">
-                                    <button
-                                        type="button"
-                                        className="rounded-full bg-purple-800 p-1 text-purple-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-800"
-                                    >
-                                        <span className="sr-only">View notifications</span>
-                                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                    </button>
-
                                     {/* Profile dropdown */}
                                     <Menu as="div" className="relative ml-3">
                                         <div>
                                             <Menu.Button className="flex max-w-xs items-center rounded-full bg-purple-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-800">
                                                 <span className="sr-only">Open user menu</span>
-                                                <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+                                                <img className="h-8 w-8 rounded-full ml-2 my-2" src={emptyUser} alt="" />
+                                                <div className="mx-2 text-white truncate text-ellipsis">
+                                                    <span className='h-10 w-10 truncate text-ellipsis'>{user ? user.name : "Bem-vindo(a) Visitante"}</span>
+                                                </div>
                                             </Menu.Button>
                                         </div>
                                         <Transition
@@ -139,17 +150,13 @@ export default function PagesMenu() {
                             ))}
                         </div>
                         <div className="border-t border-purple-700 pb-3 pt-4">
+                            <div className="flex-shrink-0">
+                                <span className='h-10 w-10'>{user ? user.name : "Bem-vindo(a) Visitante"}</span>
+                            </div>
                             <div className="flex items-center px-5">
                                 <div className="flex-shrink-0">
-                                    <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                                    <img className="h-10 w-10 rounded-full" src={emptyUser} alt="" />
                                 </div>
-                                <button
-                                    type="button"
-                                    className="ml-auto flex-shrink-0 rounded-full bg-purple-800 p-1 text-purple-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-800"
-                                >
-                                    <span className="sr-only">View notifications</span>
-                                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                </button>
                             </div>
                             <div className="mt-3 space-y-1 px-2">
                                 {userNavigation.map((item) => (
