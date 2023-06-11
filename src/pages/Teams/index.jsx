@@ -29,6 +29,7 @@ export default function TeamsPage() {
         });
         setEquipesList([]);
         getEquipesIncompletasList(competicao, categoriaSelecionada).then((data) => {
+            console.log(data);
             setEquipesList(data);
         }).catch((exc) => {
             console.log(exc);
@@ -68,7 +69,7 @@ export default function TeamsPage() {
                     <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                         <ul role="list">
                             {equipesList && equipesList.map((equipe) => (
-                                <li key={equipe.email} className="flex justify-center gap-x-6 py-5 cursor-pointer border-2 mb-2 mx-4 rounded-lg" onClick={() => { handleClickComepeticao(equipe.id) }}>
+                                <li key={equipe.id} className="flex justify-center gap-x-6 py-5 cursor-pointer border-2 mb-2 mx-4 rounded-lg" onClick={() => { handleClickComepeticao(equipe.id) }}>
                                     <div className="flex gap-x-5 mx-4">
                                         <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={empty} alt="" />
                                         <div className="min-w-0 flex-auto">

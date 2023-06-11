@@ -41,7 +41,7 @@ export default function HomePage() {
                 <main>
                     <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                         <ul role="list">
-                            {competicaoList.map((competicao) => (
+                            {competicaoList && competicaoList.map((competicao) => (
                                 <li key={competicao.email} className="flex justify-center gap-x-6 py-5 cursor-pointer border-2 mb-2 mx-4 rounded-lg" onClick={() => {handleClickComepeticao(competicao.id)}}>
                                     <div className="flex gap-x-5 mx-4">
                                         <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={empty} alt="" />

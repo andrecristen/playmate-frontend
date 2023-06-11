@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import { auth, create, getCompeticoes, getEquipesIncompletas, getCategorias, getAtletasByTecnico } from "../api/api-public"
+import { auth, postUsuario, putUsuario, getUsuario, getCompeticoes, getEquipesIncompletas, getCategorias, getAtletasByTecnico } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
 
@@ -47,12 +47,11 @@ export const PublicProvider = ({ children }) => {
     }
 
     const register = async (user) => {
-        const response = await create(user);
+        const response = await postUsuario(user);
         if (response.status == 200 || response.status == 201) {
             successMessage('Cadastro criado com sucesso.');
             navigate("/login");
         } else {
-            console.log(response);
             errorMessage('Não foi possível realizar o cadastro.');
             if (response.data) {
                 Object.entries(response.data).map((erro) => {
@@ -62,6 +61,27 @@ export const PublicProvider = ({ children }) => {
             navigate("/register");
         }
     };
+
+    const alterarUsuario = async (user) => {
+        const response = await putUsuario(user);
+        if (response.status == 200 || response.status == 201) {
+            successMessage('Cadastro alterado com sucesso.');
+            return true;
+        } else {
+            console.log(response);
+            errorMessage('Não foi possível alterar o cadastro.');
+            return false;
+        }
+    }
+
+    const consultarUsuario = async (userId) => {
+        const response = await getUsuario(userId);
+        if (response && response.status == 200 || response.status == 201) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
 
     const getCompeticaoList = async () => {
         const response = await getCompeticoes();
@@ -73,15 +93,20 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
-    const getEquipesIncompletasList = async (competicaoID) => {
-        const response = await getEquipesIncompletas(competicaoID);
+    const getEquipesIncompletasList = async (competicaoID, categoriaID) => {
+        const response = await getEquipesIncompletas(competicaoID, categoriaID);
         if (response.status == 200) {
-            return response.data;
+            var equipes = response.data;
+            for (const [key, value] of Object.entries(equipes)) {
+                value.tecnico = await consultarUsuario(value.tecnico)
+                console.log(value);
+            }              
+            return equipes;
         } else {
             errorMessage('Não foi possível a realizar busca de atletas da competição.');
             return false;
         }
-    };
+    }; 
 
     const getCategoriasList = async () => {
         const response = await getCategorias();
@@ -111,10 +136,11 @@ export const PublicProvider = ({ children }) => {
     return (
         <PublicContext.Provider
             value={{
+                loadUser,
                 login,
                 logout,
                 register,
-                loadUser,
+                alterarUsuario,
                 getCompeticaoList,
                 getEquipesIncompletasList,
                 getCategoriasList,

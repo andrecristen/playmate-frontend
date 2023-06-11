@@ -10,27 +10,13 @@ import { Dialog, Transition } from '@headlessui/react'
 export default function AthletesPage() {
 
     const navigate = useNavigate();
-    const { getMeusAtletas } = useContext(PublicContext);
+    const { getMeusAtletas, alterarUsuario } = useContext(PublicContext);
     const [atletasList, setAtletasList] = useState([]);
     const user = new User();
 
     const [openedModal, setOpenedModal] = useState(false)
 
-    const [formDataUpdateaAtleta, setFormDataUpdateaAtleta] = useState({});
-
-    const handleChangeUpdateaAtleta = (e) => {
-        const { name, value } = e.target;
-        setFormDataUpdateaAtleta((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmitUpdateaAtleta = async (e) => {
-        e.preventDefault();
-        setOpenedModal(false);
-
-    };
+    const [formDataUpdateAtleta, setformDataUpdateAtleta] = useState({});
 
     const cancelButtonRef = useRef(null)
 
@@ -41,7 +27,6 @@ export default function AthletesPage() {
     const load = () => {
         setAtletasList([]);
         getMeusAtletas().then((data) => {
-            console.log(data);
             setAtletasList(data);
         }).catch((exc) => {
             console.log(exc);
@@ -49,11 +34,26 @@ export default function AthletesPage() {
     }
 
     const handleClickAlterarAltleta = (atleta) => {
-        console.log(atleta)
-        setFormDataUpdateaAtleta(atleta);
+        setformDataUpdateAtleta(atleta);
         setOpenedModal(true);
     }
 
+    const handleChangeUpdateaAtleta = (e) => {
+        const { name, value } = e.target;
+        setformDataUpdateAtleta((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmitUpdateaAtleta = async (e) => {
+        e.preventDefault();
+        var success = await alterarUsuario(formDataUpdateAtleta);
+        if (success) {
+            setOpenedModal(false);
+            window.location.reload();
+        }  
+    };
 
     return (
         <>
@@ -135,7 +135,7 @@ export default function AthletesPage() {
                                                         name="first_name"
                                                         type="text"
                                                         required
-                                                        value={formDataUpdateaAtleta.first_name}
+                                                        value={formDataUpdateAtleta.first_name}
                                                         onChange={handleChangeUpdateaAtleta}
                                                         className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                                         placeholder="Nome"
@@ -147,7 +147,7 @@ export default function AthletesPage() {
                                                         name="last_name"
                                                         type="text"
                                                         required
-                                                        value={formDataUpdateaAtleta.last_name}
+                                                        value={formDataUpdateAtleta.last_name}
                                                         onChange={handleChangeUpdateaAtleta}
                                                         className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                                         placeholder="Sobrenome"
@@ -159,7 +159,7 @@ export default function AthletesPage() {
                                                         name="data_nascimento"
                                                         type="date"
                                                         required
-                                                        value={formDataUpdateaAtleta.data_nascimento}
+                                                        value={formDataUpdateAtleta.data_nascimento}
                                                         onChange={handleChangeUpdateaAtleta}
                                                         className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                                         placeholder="Data de Nascimento"
@@ -170,7 +170,7 @@ export default function AthletesPage() {
                                                         id="sexo"
                                                         name="sexo"
                                                         required
-                                                        value={formDataUpdateaAtleta.sexo}
+                                                        value={formDataUpdateAtleta.sexo}
                                                         onChange={handleChangeUpdateaAtleta}
                                                         className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                                         placeholder="Sexo"
