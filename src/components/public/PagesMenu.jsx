@@ -5,12 +5,13 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import logo from '../../images/logo-playmate.png';
 import emptyUser from '../../images/empty-user.webp';
 import { PublicContext } from '../../contexts/public';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function PagesMenu() {
 
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const { loadUser } = useContext(PublicContext);
 
@@ -21,7 +22,7 @@ export default function PagesMenu() {
 
     if (user) {
         navigation = [
-            { name: 'Competições', href: '/', current: true },
+            { name: 'Competições', href: '/', current: false },
             { name: 'Meus Atletas', href: '/athletes', current: false },
             { name: 'Minhas Equipes', href: '/clubs', current: false },
             { name: 'Minhas Solicitações', href: '/solicitations', current: false },
@@ -40,6 +41,11 @@ export default function PagesMenu() {
         ]
     }
 
+    for (const [key, value] of Object.entries(navigation)) {
+        value.current = (value.href == location.pathname);
+    }
+
+
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
@@ -50,7 +56,7 @@ export default function PagesMenu() {
 
     const getUserName = () => {
         if (user) {
-            return user.first_name + " " + user.last_name ;
+            return user.first_name + " " + user.last_name;
         } else {
             return "Bem-vindo(a) Visitante";
         }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import { auth, create, getCompeticoes, getEquipesIncompletas, getCategorias } from "../api/api-public"
+import { auth, create, getCompeticoes, getEquipesIncompletas, getCategorias, getAtletasByTecnico } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ export const PublicProvider = ({ children }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadUser();
+
     }, []);
 
     const loadUser = () => {
@@ -93,6 +93,21 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
+    const getMeusAtletas = async () => {
+        const user = loadUser();
+        if (user) {
+            const response = await getAtletasByTecnico(user.id);
+            if (response.status == 200) {
+                return response.data;
+            } else {
+                errorMessage('Não foi possível a realizar busca dos seus atletas.');
+                return false;
+            }
+        } else {
+            infoMessage("Não localizado usuário para carregamento das informações.");
+        }
+    };
+
     return (
         <PublicContext.Provider
             value={{
@@ -102,7 +117,8 @@ export const PublicProvider = ({ children }) => {
                 loadUser,
                 getCompeticaoList,
                 getEquipesIncompletasList,
-                getCategoriasList
+                getCategoriasList,
+                getMeusAtletas
             }}>
             {children}
         </PublicContext.Provider>
