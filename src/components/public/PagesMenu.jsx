@@ -1,16 +1,20 @@
-import { Fragment } from 'react'
+import { Fragment, useContext } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import logo from '../../images/logo-playmate.png';
 import emptyUser from '../../images/empty-user.webp';
+import { PublicContext } from '../../contexts/public';
+import { useNavigate } from 'react-router-dom';
 
 export default function PagesMenu() {
 
-    let user = {
-        name: 'André Cristen',
-        email: 'teste@example.com',
-    }
+
+    const navigate = useNavigate();
+
+    const { loadUser } = useContext(PublicContext);
+
+    let user = loadUser();
 
     let navigation = [];
     let userNavigation = [];
@@ -35,10 +39,20 @@ export default function PagesMenu() {
         ]
     }
 
-    
-
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
+    }
+
+    const handleClickLogo = () => {
+        navigate("/");
+    }
+
+    const getUserName = () => {
+        if (user) {
+            return user.first_name + " " + user.last_name ;
+        } else {
+            return "Bem-vindo(a) Visitante";
+        }
     }
 
     return (
@@ -47,7 +61,7 @@ export default function PagesMenu() {
                 <>
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex h-16 items-center justify-between">
-                            <div className="flex items-center">
+                            <div className="flex items-center" onClick={handleClickLogo}>
                                 <div className="flex-shrink-0">
                                     <img
                                         className="h-8 w-15"
@@ -84,7 +98,7 @@ export default function PagesMenu() {
                                                 <span className="sr-only">Open user menu</span>
                                                 <img className="h-8 w-8 rounded-full ml-2 my-2" src={emptyUser} alt="" />
                                                 <div className="mx-2 text-white truncate text-ellipsis">
-                                                    <span className='h-10 w-10 truncate text-ellipsis'>{user ? user.name : "Bem-vindo(a) Visitante"}</span>
+                                                    <span className='h-10 w-10 truncate text-ellipsis'>{getUserName()}</span>
                                                 </div>
                                             </Menu.Button>
                                         </div>
@@ -151,7 +165,7 @@ export default function PagesMenu() {
                         </div>
                         <div className="border-t border-purple-700 pb-3 pt-4">
                             <div className="flex-shrink-0">
-                                <span className='h-10 w-10'>{user ? user.name : "Bem-vindo(a) Visitante"}</span>
+                                <span className='h-10 w-10'>{getUserName()}</span>
                             </div>
                             <div className="flex items-center px-5">
                                 <div className="flex-shrink-0">

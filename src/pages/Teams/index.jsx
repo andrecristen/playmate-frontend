@@ -54,7 +54,7 @@ export default function TeamsPage() {
                     </div>
                 </header>
                 <main>
-                    <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                    <div className="mx-4 my-4">
                         <label for="categorias" class="block mb-2 text-sm font-medium text-purple-900 dark:text-purple">Categoria:</label>
                         <select value={categoriaSelecionada} onChange={handleSelectCategoria} id="categorias" class="bg-purple-50 border border-purple-300 text-purple-600 text-sm rounded-lg block w-full p-2.5">
                             <option value="null">Selecione uma categoria</option>
@@ -67,7 +67,7 @@ export default function TeamsPage() {
                     </div>
                     <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                         <ul role="list">
-                            {equipesList.map((equipe) => (
+                            {equipesList && equipesList.map((equipe) => (
                                 <li key={equipe.email} className="flex justify-center gap-x-6 py-5 cursor-pointer border-2 mb-2 mx-4 rounded-lg" onClick={() => { handleClickComepeticao(equipe.id) }}>
                                     <div className="flex gap-x-5 mx-4">
                                         <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={empty} alt="" />

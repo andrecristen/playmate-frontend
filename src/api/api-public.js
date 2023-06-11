@@ -7,7 +7,7 @@ export const api = axios.create({
 });
 
 export const auth = async (email, password) => {
-    return api.post('/api/v1/auth/', { username: email, password }).then((result) => {
+    return api.post('/v1/auth/', { username: email, password: password }).then((result) => {
         return result;
     }).catch((error) => {
         return error.response;
