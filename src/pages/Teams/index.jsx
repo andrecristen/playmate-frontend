@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import PagesMenu from '../../components/public/PagesMenu';
-import empty from '../../images/empty.png';
+import empty from '../../images/empty-user.webp';
 import { PublicContext } from '../../contexts/public';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { getCategorias } from '../../api/api-public';
 
 export default function TeamsPage() {
 
@@ -44,6 +45,14 @@ export default function TeamsPage() {
         setCategoriaSelecionada(event.target.value);
     }
 
+    const getCategoriaEquipe = (categoriaID) => {
+        return categoriasList.map((categoria) => {
+            if (categoria.id == categoriaID) {
+                return categoria.nome;
+            }
+        });
+    }
+
 
     return (
         <>
@@ -51,14 +60,14 @@ export default function TeamsPage() {
                 <PagesMenu />
                 <header className="bg-white shadow">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <h1 className="text-3xl font-bold tracking-tight text-purple-900">Atletas</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-purple-900">Atletas Disponíveis</h1>
                     </div>
                 </header>
                 <main>
                     <div className="mx-4 my-4">
                         <label for="categorias" class="block mb-2 text-sm font-medium text-purple-900 dark:text-purple">Categoria:</label>
                         <select value={categoriaSelecionada} onChange={handleSelectCategoria} id="categorias" class="bg-purple-50 border border-purple-300 text-purple-600 text-sm rounded-lg block w-full p-2.5">
-                            <option value="null">Selecione uma categoria</option>
+                            <option value="null">Todas as categorias</option>
                             {categoriasList && categoriasList.map((categoria, index) => {
                                 return (
                                     <option value={categoria.id}>{categoria.nome}</option>
@@ -74,14 +83,17 @@ export default function TeamsPage() {
                                         <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={empty} alt="" />
                                         <div className="min-w-0 flex-auto">
                                             <p className="text-sm font-semibold leading-6 text-gray-900">{equipe.nome}</p>
-                                            <p className="text-sm leading-6 text-gray-400">Data da competição:</p>
-                                            <p className="text-sm leading-6 text-gray-400">{equipe.data_equipe}</p>
-                                            <p className="text-sm leading-6 text-gray-400">Data final das inscrições:</p>
-                                            <p className="text-sm leading-6 text-gray-400">{equipe.data_final_inscricao}</p>
+                                            <p className="text-sm leading-6 text-gray-900">Técnico:</p>
+                                            <p className="text-sm leading-6 text-gray-600">{equipe.tecnico.first_name + " " + equipe.tecnico.last_name}</p>
+                                            <p className="text-sm leading-6 text-gray-900">Atleta:</p>
+                                            <p className="text-sm leading-6 text-gray-600">{equipe.atleta.first_name + " " + equipe.atleta.last_name}</p>
+                                            <p className="text-sm leading-6 text-gray-900">Categoria:</p>
+                                            <p className="text-sm leading-6 text-gray-600">{getCategoriaEquipe(equipe.categoria)}</p>
                                         </div>
                                     </div>
                                 </li>
                             ))}
+                            {!equipesList || !equipesList.length ? "Sem equipes" : ""}
                         </ul>
                     </div>
                 </main>

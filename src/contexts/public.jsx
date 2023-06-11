@@ -14,6 +14,7 @@ import {
     getClubes,
     postClube,
     putClube,
+    getEquipeAtleta,
 } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
@@ -136,14 +137,24 @@ export const PublicProvider = ({ children }) => {
         const response = await getEquipesIncompletas(competicaoID, categoriaID);
         if (response.status == 200) {
             var equipes = response.data;
-            for (const [key, value] of Object.entries(equipes)) {
-                value.tecnico = await consultarUsuario(value.tecnico)
-                console.log(value);
+            for (const [key, equipe] of Object.entries(equipes)) {
+                equipe.tecnico = await consultarUsuario(equipe.tecnico)
+                equipe.atleta = await consultarEquipeAtleta(equipe.id, "true");
             }
+            console.log(equipes);
             return equipes;
         } else {
             errorMessage('Não foi possível a realizar busca de atletas da competição.');
             return false;
+        }
+    };
+
+    const consultarEquipeAtleta = async (equipeID, fixo) => {
+        const response = await getEquipeAtleta(equipeID, fixo);
+        if (response.status == 200 && response.data && response.data[0]) {
+            return consultarUsuario(response.data[0].atleta);
+        } else {
+            return null;
         }
     };
 
