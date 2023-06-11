@@ -78,3 +78,43 @@ export const getCategorias = async () => {
         return error.response;
     });
 }
+
+export const getEstados = async () => {
+    return api.get('/v1/estado/').then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
+export const getCidades = async (estadoID) => {
+    return api.get('/v1/cidade/?uf=' + estadoID).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
+export const getClubes = async (tecnicoID) => {
+    return api.get('/v1/clube/?tecnico_id=' + tecnicoID).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
+export const postClube = async (clube) => {
+    return api.post('/v1/clube/', clube).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
+export const putClube = async (clube) => {
+    return api.put('/v1/clube/' + clube.id + '/', clube).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}

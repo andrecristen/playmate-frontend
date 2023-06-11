@@ -8,6 +8,7 @@ import ErrorPage from "../pages/Error";
 import LogoutPage from "../pages/Logout";
 import AthletesPage from "../pages/Athletes";
 import PrivateContainer from "../components/UI/PrivateContainer";
+import ClubsPage from "../pages/Clubs";
 
 const AppRoutes = () => {
 
@@ -23,7 +24,7 @@ const AppRoutes = () => {
                     <Route exact path="/teams/:competicao" element={<TeamsPage />}></Route>
                     {/* Rotas para usuários logados */}
                     <Route exact path="/athletes" element={<PrivateContainer><AthletesPage /></PrivateContainer>}></Route>
-                    <Route exact path="/clubs" element={<PrivateContainer><AthletesPage /></PrivateContainer>}></Route>
+                    <Route exact path="/clubs" element={<PrivateContainer><ClubsPage /></PrivateContainer>}></Route>
                     <Route exact path="/solicitations" element={<PrivateContainer><AthletesPage /></PrivateContainer>}></Route>
                     <Route exact path="/profile" element={<PrivateContainer><AthletesPage /></PrivateContainer>}></Route>
                     {/* Rotas de erros */}

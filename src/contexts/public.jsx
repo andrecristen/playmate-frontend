@@ -1,14 +1,30 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import { auth, postUsuario, putUsuario, getUsuario, getCompeticoes, getEquipesIncompletas, getCategorias, getAtletasByTecnico } from "../api/api-public"
+import {
+    auth,
+    postUsuario,
+    putUsuario,
+    getUsuario,
+    getCompeticoes,
+    getEquipesIncompletas,
+    getCategorias,
+    getAtletasByTecnico,
+    getEstados,
+    getCidades,
+    getClubes,
+    postClube,
+    putClube,
+} from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
+import User from "../models/User";
 
 export const PublicContext = createContext();
 
 export const PublicProvider = ({ children }) => {
 
     const navigate = useNavigate();
+    const userInstance = new User();
 
     useEffect(() => {
 
@@ -74,6 +90,29 @@ export const PublicProvider = ({ children }) => {
         }
     }
 
+    const novoAtleta = async (user) => {
+        const currentDate = new Date();
+        const timestamp = currentDate.getTime();
+        user.tipo = userInstance.TIPO_ATLETA;
+        user.password = "PS" + timestamp;
+        user.email = timestamp + "@playmate.com.br";
+        user.username = "atleta" + timestamp;
+        const response = await postUsuario(user);
+        debugger;
+        if (response.status == 200 || response.status == 201) {
+            successMessage('Atleta criado com sucesso.');
+            return true;
+        } else {
+            errorMessage('Não foi possível realizar o cadastro.');
+            if (response.data) {
+                Object.entries(response.data).map((erro) => {
+                    infoMessage(erro[1][0]);
+                });
+            }
+            return false;
+        }
+    }
+
     const consultarUsuario = async (userId) => {
         const response = await getUsuario(userId);
         if (response && response.status == 200 || response.status == 201) {
@@ -100,13 +139,13 @@ export const PublicProvider = ({ children }) => {
             for (const [key, value] of Object.entries(equipes)) {
                 value.tecnico = await consultarUsuario(value.tecnico)
                 console.log(value);
-            }              
+            }
             return equipes;
         } else {
             errorMessage('Não foi possível a realizar busca de atletas da competição.');
             return false;
         }
-    }; 
+    };
 
     const getCategoriasList = async () => {
         const response = await getCategorias();
@@ -133,6 +172,75 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
+    const getMeusClubes = async () => {
+        const user = loadUser();
+        if (user) {
+            const response = await getClubes(user.id);
+            if (response.status == 200) {
+                return response.data;
+            } else {
+                errorMessage('Não foi possível a realizar busca dos seus clubes.');
+                return false;
+            }
+        } else {
+            infoMessage("Não localizado usuário para carregamento das informações.");
+        }
+    };
+
+    const novoClube = async (clube) => {
+        const response = await postClube(clube);
+        if (response.status == 200 || response.status == 201) {
+            successMessage('Clube criado com sucesso.');
+            return true;
+        } else {
+            errorMessage('Não foi possível realizar o cadastro.');
+            if (response.data) {
+                Object.entries(response.data).map((erro) => {
+                    infoMessage(erro[1][0]);
+                });
+            }
+            return false;
+        }
+    };
+
+    const alterarClube = async (clube) => {
+        const response = await putClube(clube);
+        if (response.status == 200 || response.status == 201) {
+            successMessage('Clube alterado com sucesso.');
+            return true;
+        } else {
+            errorMessage('Não foi possível realizar a alteração cadastro.');
+            if (response.data) {
+                Object.entries(response.data).map((erro) => {
+                    infoMessage(erro[1][0]);
+                });
+            }
+            return false;
+        }
+    };
+
+    const getEstadosList = async () => {
+        const response = await getEstados();
+        if (response.status == 200) {
+            console.log(response);
+            return response.data;
+        } else {
+            errorMessage('Não foi possível realizar a busca de estados.');
+            return false;
+        }
+    };
+
+    const getCidadesList = async (estado) => {
+        const response = await getCidades(estado);
+        if (response.status == 200) {
+            console.log(response);
+            return response.data;
+        } else {
+            errorMessage('Não foi possível realizar a busca de cidades do estado.');
+            return false;
+        }
+    };
+
     return (
         <PublicContext.Provider
             value={{
@@ -141,10 +249,16 @@ export const PublicProvider = ({ children }) => {
                 logout,
                 register,
                 alterarUsuario,
+                novoAtleta,
                 getCompeticaoList,
                 getEquipesIncompletasList,
                 getCategoriasList,
-                getMeusAtletas
+                getMeusAtletas,
+                getMeusClubes,
+                novoClube,
+                alterarClube,
+                getEstadosList,
+                getCidadesList
             }}>
             {children}
         </PublicContext.Provider>
