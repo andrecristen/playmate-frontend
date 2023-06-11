@@ -14,6 +14,14 @@ export const auth = async (email, password) => {
     });
 }
 
+export const create = async (user) => {
+    return api.post('/v1/usuario/', user).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
 export const getCompeticoes = async () => {
     return api.get('/v1/competicao/').then((result) => {
         return result;

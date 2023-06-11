@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import { auth, getCompeticoes, getEquipesIncompletas, getCategorias } from "../api/api-public"
+import { auth, create, getCompeticoes, getEquipesIncompletas, getCategorias } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
 
@@ -46,6 +46,23 @@ export const PublicProvider = ({ children }) => {
         infoMessage('Usuário deslogado');
     }
 
+    const register = async (user) => {
+        const response = await create(user);
+        if (response.status == 200 || response.status == 201) {
+            successMessage('Cadastro criado com sucesso.');
+            navigate("/login");
+        } else {
+            console.log(response);
+            errorMessage('Não foi possível realizar o cadastro.');
+            if (response.data) {
+                Object.entries(response.data).map((erro) => {
+                    infoMessage(erro[1][0]);
+                });
+            }
+            navigate("/register");
+        }
+    };
+
     const getCompeticaoList = async () => {
         const response = await getCompeticoes();
         if (response.status == 200) {
@@ -81,6 +98,7 @@ export const PublicProvider = ({ children }) => {
             value={{
                 login,
                 logout,
+                register,
                 loadUser,
                 getCompeticaoList,
                 getEquipesIncompletasList,

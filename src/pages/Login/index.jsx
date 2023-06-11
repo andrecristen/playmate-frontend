@@ -35,7 +35,7 @@ export default function LoginPage() {
                     <div className="text-center md:text-center">
                         <button disabled={validatingLogin ? true : false} className="mt-4 bg-purple-600 hover:bg-purple-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider" type="submit">Login</button>
                     </div>
-                    <div className="mt-4 font-semibold text-sm text-slate-500 text-center md:text-left">
+                    <div className="mt-4 font-semibold text-sm text-slate-500 text-center md:text-center">
                         Ainda não possui uma conta? <a className="text-red-600 hover:underline hover:underline-offset-4" href="/register">Crie agora</a>
                     </div>
                 </form>
