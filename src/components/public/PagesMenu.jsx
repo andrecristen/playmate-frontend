@@ -23,8 +23,8 @@ export default function PagesMenu() {
     if (user) {
         navigation = [
             { name: 'Competições', href: '/', current: false },
-            { name: 'Meus Atletas', href: '/athletes', current: false },
             { name: 'Minhas Equipes', href: '/clubs', current: false },
+            { name: 'Meus Atletas', href: '/athletes', current: false },
             { name: 'Minhas Solicitações', href: '/solicitations', current: false },
         ]
         userNavigation = [
