@@ -13,7 +13,7 @@ export default function TeamsPage() {
     let { competicao } = useParams();
 
     const navigate = useNavigate();
-    const { getEquipesIncompletasList, getCategoriasList, loadUser, getMeusAtletas } = useContext(PublicContext);
+    const { getEquipesIncompletasList, getCategoriasList, loadUser, getMeusAtletas, criarSolicitacaoEquipeAtleta } = useContext(PublicContext);
 
 
     const tecnicoLogado = loadUser();
@@ -149,8 +149,7 @@ export default function TeamsPage() {
                 errorMessage("O atleta é novo demais para a categoria da equipe desejada. Selecione outro atleta.");
                 return false;
             }
-
-            // success = await novoAtleta(formDataSolicitacao);
+             success = await criarSolicitacaoEquipeAtleta(equipeSolicitacao.id, atletaSelecionado.id);
         } else {
             debugger;
             // success = await alterarUsuario(formDataSolicitacao);

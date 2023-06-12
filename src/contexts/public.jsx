@@ -15,6 +15,7 @@ import {
     postClube,
     putClube,
     getEquipeAtleta,
+    postEquipeAtleta,
 } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
@@ -98,7 +99,6 @@ export const PublicProvider = ({ children }) => {
         user.email = timestamp + "@playmate.com.br";
         user.username = "atleta" + timestamp;
         const response = await postUsuario(user);
-        debugger;
         if (response.status == 200 || response.status == 201) {
             successMessage('Atleta criado com sucesso.');
             return true;
@@ -153,6 +153,21 @@ export const PublicProvider = ({ children }) => {
             return consultarUsuario(response.data[0].atleta);
         } else {
             return null;
+        }
+    };
+
+    const criarSolicitacaoEquipeAtleta = async (equipeID, atletaID) => {
+        let equipeAtleta = {
+            "situacao": 3,//Solicitado
+            "fixo": false,
+            "equipe": equipeID,
+            "atleta": atletaID
+        };
+        const response = await postEquipeAtleta(equipeAtleta);
+        if (response.status == 200 || response.status == 201) {
+            return true;
+        } else {
+            return false;
         }
     };
 
@@ -265,7 +280,8 @@ export const PublicProvider = ({ children }) => {
                 novoClube,
                 alterarClube,
                 getEstadosList,
-                getCidadesList
+                getCidadesList,
+                criarSolicitacaoEquipeAtleta
             }}>
             {children}
         </PublicContext.Provider>
