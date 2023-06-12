@@ -1,7 +1,7 @@
 import axios from "axios";
 import User from "../models/User";
 
-export const URL_API = "http://localhost:8000/api";
+export const URL_API = process.env.REACT_APP_LINK_API;
 
 export const api = axios.create({
     baseURL: URL_API,
