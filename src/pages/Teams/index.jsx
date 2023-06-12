@@ -113,13 +113,17 @@ export default function TeamsPage() {
     };
 
     const calculaIdade = (nascimento) => {
-        nascimento = createDateFromString(nascimento);
-        var hoje = new Date();
-        var diferencaAnos = hoje.getFullYear() - nascimento.getFullYear();
-        if (new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()) <
-            new Date(hoje.getFullYear(), nascimento.getMonth(), nascimento.getDate()))
-            diferencaAnos--;
-        return diferencaAnos;
+        if (nascimento) {
+            nascimento = createDateFromString(nascimento);
+            var hoje = new Date();
+            var diferencaAnos = hoje.getFullYear() - nascimento.getFullYear();
+            if (new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()) <
+                new Date(hoje.getFullYear(), nascimento.getMonth(), nascimento.getDate()))
+                diferencaAnos--;
+            return diferencaAnos;
+        } else {
+            return 0;
+        }
     }
 
     const createDateFromString = (dateString) => {
@@ -191,9 +195,9 @@ export default function TeamsPage() {
                                         <div className="min-w-0 flex-auto">
                                             <p className="text-sm font-semibold leading-6 text-gray-900">{equipe.nome}</p>
                                             <p className="text-sm leading-6 text-gray-900">Técnico:</p>
-                                            <p className="text-sm leading-6 text-gray-600">{equipe.tecnico.first_name + " " + equipe.tecnico.last_name}</p>
+                                            <p className="text-sm leading-6 text-gray-600">{equipe.tecnico ? equipe.tecnico.first_name + " " + equipe.tecnico.last_name : ""}</p>
                                             <p className="text-sm leading-6 text-gray-900">Atleta:</p>
-                                            <p className="text-sm leading-6 text-gray-600">{equipe.atleta.first_name + " " + equipe.atleta.last_name}</p>
+                                            <p className="text-sm leading-6 text-gray-600">{equipe.atleta ? equipe.atleta.first_name + " " + equipe.atleta.last_name : ""}</p>
                                             <p className="text-sm leading-6 text-gray-900">Categoria:</p>
                                             <p className="text-sm leading-6 text-gray-600">{getCategoriaNome(equipe.categoria)}</p>
                                             <button

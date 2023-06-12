@@ -72,7 +72,7 @@ export default function ClubsPage() {
             infoMessage("Selecione o estado");
             return false;
         }
-        if (!formDataClube.sexo || formDataClube.cidade == "null") {
+        if (!formDataClube.cidade || formDataClube.cidade == "null") {
             infoMessage("Selecione a cidade");
             return false;
         }
