@@ -124,7 +124,7 @@ export default function ClubsPage() {
                                                 <p className="text-sm font-semibold leading-6 text-gray-900">{clube.nome}</p>
                                                 <button
                                                     type="button"
-                                                    className="group relative py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                                    className="mt-4 group relative py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                                 >
                                                     Alterar
                                                 </button>

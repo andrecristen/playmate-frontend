@@ -17,7 +17,6 @@ export default function HomePage() {
     const load = () => {
         setCompeticaoList([]);
         getCompeticaoList().then((data) => {
-            console.log(data);
             setCompeticaoList(data);
         }).catch((exc) => {
             console.log(exc);

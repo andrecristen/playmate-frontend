@@ -85,7 +85,6 @@ export const PublicProvider = ({ children }) => {
             successMessage('Cadastro alterado com sucesso.');
             return true;
         } else {
-            console.log(response);
             errorMessage('Não foi possível alterar o cadastro.');
             return false;
         }
@@ -141,7 +140,6 @@ export const PublicProvider = ({ children }) => {
                 equipe.tecnico = await consultarUsuario(equipe.tecnico)
                 equipe.atleta = await consultarEquipeAtleta(equipe.id, "true");
             }
-            console.log(equipes);
             return equipes;
         } else {
             errorMessage('Não foi possível a realizar busca de atletas da competição.');
@@ -233,7 +231,6 @@ export const PublicProvider = ({ children }) => {
     const getEstadosList = async () => {
         const response = await getEstados();
         if (response.status == 200) {
-            console.log(response);
             return response.data;
         } else {
             errorMessage('Não foi possível realizar a busca de estados.');
@@ -244,7 +241,6 @@ export const PublicProvider = ({ children }) => {
     const getCidadesList = async (estado) => {
         const response = await getCidades(estado);
         if (response.status == 200) {
-            console.log(response);
             return response.data;
         } else {
             errorMessage('Não foi possível realizar a busca de cidades do estado.');

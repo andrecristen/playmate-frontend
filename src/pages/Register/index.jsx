@@ -62,18 +62,6 @@ export default function RegisterPage() {
                     </div>
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit} autoComplete="off">
                         <div className="rounded-md shadow-sm">
-                            {/* <div className="py-2">
-                                <input
-                                    id="username"
-                                    name="username"
-                                    type="text"
-                                    required
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                                    placeholder="Nome de usuário"
-                                />
-                            </div> */}
                             <div className="py-2">
                                 <input
                                     id="email"

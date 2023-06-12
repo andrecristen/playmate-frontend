@@ -121,7 +121,7 @@ export default function AthletesPage() {
                                                 <p className="text-sm leading-6 text-gray-400">{user.SEXO_LIST[atleta.sexo]}</p>
                                                 <button
                                                     type="button"
-                                                    className="group relative py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                                    className="mt-4 group relative py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                                 >
                                                     Alterar
                                                 </button>
@@ -213,7 +213,7 @@ export default function AthletesPage() {
                                                         className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                                         placeholder="Sexo"
                                                     >
-                                                        <option value="null">Selecione o seu sexo</option>
+                                                        <option value="null">Selecione o sexo do atleta</option>
                                                         {user && Object.entries(user.SEXO_LIST).map((sexo) => {
                                                             return (
                                                                 <option value={sexo[0]}>{sexo[1]}</option>
