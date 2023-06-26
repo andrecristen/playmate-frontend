@@ -78,6 +78,14 @@ export const getEquipe = async (equipeID) => {
     });
 }
 
+export const postEquipe = async (equipe) => {
+    return api.post('/v1/equipe/', equipe).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
 export const getAtletasByTecnico = async (tecnicoID) => {
     const user = new User();
     return api.get('/v1/usuario/?tipo=' + user.TIPO_ATLETA + '&clube__tecnico_id=' + tecnicoID).then((result) => {
@@ -157,6 +165,7 @@ export const getEquipeAtleta = async (equipeId, fixo, situacao) => {
         return error.response;
     });
 }
+
 export const getEquipesAtletaTecnico = async (tecnicoID) => {
     var filter = "?atleta__clube__tecnico_id=" + tecnicoID + "&fixo=true";
     return api.get('/v1/equipe_atleta/' + filter).then((result) => {

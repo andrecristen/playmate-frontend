@@ -13,7 +13,7 @@ export default function TeamsPage() {
     let { competicao } = useParams();
 
     const navigate = useNavigate();
-    const { getEquipesIncompletasList, getCategoriasList, loadUser, getMeusAtletas, criarSolicitacaoEquipeAtleta } = useContext(PublicContext);
+    const { getEquipesIncompletasList, getCategoriasList, loadUser, getMeusAtletas, criarSolicitacaoEquipeAtleta, novaEquipe } = useContext(PublicContext);
 
 
     const tecnicoLogado = loadUser();
@@ -25,12 +25,18 @@ export default function TeamsPage() {
     const [atletasList, setAtletasList] = useState([]);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
 
-    //Form
+    //Form Solicitação
     const [equipeSolicitacao, setEquipeSolicitacao] = useState(null);
     const [categoriaSolicitacao, setCategoriaSolicitacao] = useState(null);
     const [openedModalSolicitacao, setOpenedModalSolicitacao] = useState(false)
     const [formDataSolicitacao, setFormDataSolicitacao] = useState({});
-    const cancelButtonRef = useRef(null)
+    const cancelButtonSolicitacaoRef = useRef(null)
+
+    //Form criação
+    const [categoriaCriacao, setCategoriaCriacao] = useState(null);
+    const [openedModalCriacao, setOpenedModalCriacao] = useState(false)
+    const [formDataCriacao, setFormDataCriacao] = useState({});
+    const cancelButtonCriacaoRef = useRef(null)
 
     useEffect(() => {
         load();
@@ -157,7 +163,7 @@ export default function TeamsPage() {
                 errorMessage("O atleta é novo demais para a categoria da equipe desejada. Selecione outro atleta.");
                 return false;
             }
-             success = await criarSolicitacaoEquipeAtleta(equipeSolicitacao.id, atletaSelecionado.id);
+            success = await criarSolicitacaoEquipeAtleta(equipeSolicitacao.id, atletaSelecionado.id);
         } else {
             debugger;
             // success = await alterarUsuario(formDataSolicitacao);
@@ -168,6 +174,47 @@ export default function TeamsPage() {
         }
     };
 
+    const handleChangeCriacao = (e) => {
+        const { name, value } = e.target;
+        setFormDataCriacao((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleClickNovaEquipeAtleta = async() => {
+        setFormDataCriacao([]);
+        setOpenedModalCriacao(true);
+    }
+
+    const handleSubmitSolicitarCriacaoEquipe = async(e) => {
+        debugger;
+        e.preventDefault();
+        if (!formDataCriacao.atleta || formDataCriacao.atleta == "null") {
+            infoMessage("Selecione o atleta");
+            return false;
+        }
+        if (!formDataCriacao.categoria || formDataCriacao.categoria == "null") {
+            infoMessage("Selecione a categoria");
+            return false;
+        }
+        var atletaSelecionado = getAtleta(formDataCriacao.atleta);
+        var categoriaEquipeSelecionada = getCategoria(formDataCriacao.categoria);
+        var idadeAtleta = calculaIdade(atletaSelecionado.data_nascimento);
+        if (idadeAtleta > categoriaEquipeSelecionada.idade_maxima) {
+            errorMessage("O atleta é velho demais para a categoria da equipe desejada. Selecione outro atleta.");
+            return false;
+        }
+        if (idadeAtleta < categoriaEquipeSelecionada.idade_minima) {
+            errorMessage("O atleta é novo demais para a categoria da equipe desejada. Selecione outro atleta.");
+            return false;
+        }
+        var success = await novaEquipe(competicao, formDataCriacao.categoria, formDataCriacao.atleta);
+        if (success) {
+            setOpenedModalSolicitacao(false);
+            window.location.reload();
+        }
+    }
 
     return (
         <>
@@ -179,6 +226,18 @@ export default function TeamsPage() {
                     </div>
                 </header>
                 <main>
+                    {tecnicoLogado ? <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                        <div className='py-2 px-4 w-full'>
+                            <button
+                                type="button"
+                                onClick={handleClickNovaEquipeAtleta}
+                                className="float-right group relative py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                            >
+                                Cadastrar Meu Atleta
+                            </button>
+                        </div>
+                    </div> : ""}
+                    
                     <div className="mx-4 my-4">
                         <label for="categorias" class="block mb-2 text-sm font-medium text-purple-900 dark:text-purple">Categoria:</label>
                         <select value={categoriaSelecionada} onChange={handleSelectCategoria} id="categorias" class="bg-purple-50 border border-purple-300 text-purple-600 text-sm rounded-lg block w-full p-2.5">
@@ -221,7 +280,7 @@ export default function TeamsPage() {
             </div>
             {/* Modal formação equipe */}
             <Transition.Root show={openedModalSolicitacao} as={Fragment}>
-                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpenedModalSolicitacao}>
+                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonSolicitacaoRef} onClose={setOpenedModalSolicitacao}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -357,7 +416,100 @@ export default function TeamsPage() {
                                                 type="button"
                                                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                                                 onClick={() => setOpenedModalSolicitacao(false)}
-                                                ref={cancelButtonRef}>
+                                                ref={cancelButtonSolicitacaoRef}>
+                                                Cancelar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
+            {/* Modal formação equipe */}
+            <Transition.Root show={openedModalCriacao} as={Fragment}>
+                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonCriacaoRef} onClose={setOpenedModalCriacao}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="w-full flex items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                                    <form className="mt-8 space-y-6" onSubmit={handleSubmitSolicitarCriacaoEquipe} autoComplete="off">
+                                        <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                                <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                                                    Cadastrar Atleta
+                                                </Dialog.Title>
+                                                <div className="py-2">
+                                                        <select
+                                                            id="categoria"
+                                                            name="categoria"
+                                                            required
+                                                            value={formDataSolicitacao.categoria}
+                                                            onChange={handleChangeCriacao}
+                                                            className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                                                            placeholder="Categoria"
+                                                        >
+                                                            <option value="null">Selecione a categoria</option>
+                                                            {categoriasList && categoriasList.map((categoria) => {
+                                                                return (
+                                                                    <option value={categoria.id}>{categoria.nome}</option>
+                                                                );
+                                                            })}
+                                                        </select>
+                                                    </div>
+                                                <div className="py-2">
+                                                        <select
+                                                            id="atleta"
+                                                            name="atleta"
+                                                            required
+                                                            value={formDataSolicitacao.atleta}
+                                                            onChange={handleChangeCriacao}
+                                                            className="rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                                                            placeholder="Atleta"
+                                                        >
+                                                            <option value="null">Selecione o atleta</option>
+                                                            {atletasList && atletasList.map((atleta) => {
+                                                                return (
+                                                                    <option value={atleta.id}>{atleta.first_name + " " + atleta.last_name} - Idade: {calculaIdade(atleta.data_nascimento)}</option>
+                                                                );
+                                                            })}
+                                                        </select>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                            <button
+                                                type="submit"
+                                                className="inline-flex w-full justify-center rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 sm:ml-3 sm:w-auto"
+                                            >
+                                                Confirmar
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                                onClick={() => setOpenedModalCriacao(false)}
+                                                ref={cancelButtonCriacaoRef}>
                                                 Cancelar
                                             </button>
                                         </div>

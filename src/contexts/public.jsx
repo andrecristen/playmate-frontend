@@ -14,6 +14,7 @@ import {
     getClubes,
     postClube,
     putClube,
+    postEquipe,
     getEquipe,
     getEquipeAtleta,
     getEquipesAtletaTecnico,
@@ -175,6 +176,39 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
+    const novaEquipe = async (competicao, categoria, atleta) => {
+        const user = loadUser();
+        let equipe = {
+            "competicao": competicao,
+            "categoria": categoria,
+            "tecnico": user.id
+        }
+        const response = await postEquipe(equipe);
+        if ((response.status == 200 || response.status == 201) && response.data.id) {
+            const solicitations = new Solicitations();
+            let equipeAtleta = {
+                "situacao": solicitations.SITUACAO_APROVADO,
+                "fixo": true,
+                "equipe": response.data.id,
+                "atleta": atleta
+            };
+            const responseAtleta = await postEquipeAtleta(equipeAtleta);
+            if (responseAtleta.status == 200 || responseAtleta.status == 201) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            errorMessage('Não foi possível realizar o cadastro.');
+            if (response.data) {
+                Object.entries(response.data).map((erro) => {
+                    infoMessage(erro[1][0]);
+                });
+            }
+            return false;
+        }
+    }
+
     const consultarEquipe = async (equipeID) => {
         const response = await getEquipe(equipeID);
         if (response.status == 200 && response.data && response.data) {
@@ -226,8 +260,9 @@ export const PublicProvider = ({ children }) => {
     }
 
     const criarSolicitacaoEquipeAtleta = async (equipeID, atletaID) => {
+        const solicitations = new Solicitations();
         let equipeAtleta = {
-            "situacao": 3,//Solicitado
+            "situacao": solicitations.SITUACAO_SOLICITADO,
             "fixo": false,
             "equipe": equipeID,
             "atleta": atletaID
@@ -365,6 +400,7 @@ export const PublicProvider = ({ children }) => {
                 getMeusClubes,
                 getMinhasEquipesAtletas,
                 alterarSituacaoEquipeAtleta,
+                novaEquipe,
                 novoClube,
                 alterarClube,
                 getEstadosList,
