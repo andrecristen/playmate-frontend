@@ -2,14 +2,18 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import PagesMenu from '../../components/public/PagesMenu';
 import { PublicContext } from '../../contexts/public';
 import empty from '../../images/empty-user.webp';
+import Solicitations from "../../models/Solicitations";
+import { useNavigate } from 'react-router-dom';
 
 export default function SolicitationsPage() {
 
     // Geral
-    const { getMinhasEquipesAtletas } = useContext(PublicContext);
+    const { getMinhasEquipesAtletas, alterarSituacaoEquipeAtleta } = useContext(PublicContext);
     const [minhasEquipesList, setMinhasEquipesList] = useState([]);
     const [, updateState] = useState();
     const forceUpdate = useCallback(() => updateState({}), []);
+
+    const solicitations = new Solicitations();
 
     useEffect(() => {
         load();
@@ -22,18 +26,32 @@ export default function SolicitationsPage() {
             console.log(data);
             setTimeout(() => {
                 forceUpdate();
+            }, 500);
+            setTimeout(() => {
+                forceUpdate();
+            }, 1000);
+            setTimeout(() => {
+                forceUpdate();
             }, 1500);
         }).catch((exc) => {
             console.log(exc);
         });
     }
 
-    const handleClickConfirmarFormacaoEquipe = async (solicitacaoID) => {
-
+    const handleClickConfirmarFormacaoEquipe = async (solicitacao) => {
+        solicitacao.atleta = solicitacao.atleta.id;
+        alterarSituacaoEquipeAtleta(solicitacao, solicitations.SITUACAO_APROVADO).then((data) => {
+            console.log(data);
+            window.location.reload();
+        });
     }
 
-    const handleClickRejeitarFormacaoEquipe = async (solicitacaoID) => {
-        
+    const handleClickRejeitarFormacaoEquipe = async (solicitacao) => {
+        solicitacao.atleta = solicitacao.atleta.id;
+        alterarSituacaoEquipeAtleta(solicitacao, solicitations.SITUACAO_REJEITADO).then((data) => {
+            console.log(data);
+            window.location.reload();
+        });
     }
 
     return (
@@ -71,14 +89,14 @@ export default function SolicitationsPage() {
                                                         return <div key={solicitacao.id} className="gap-x-6 py-5 px-5 cursor-pointer border-2 mb-2 mx-4 rounded-lg" >
                                                             <p className="text-sm font-semibold leading-6 text-gray-900">{solicitacao.atleta.first_name ? solicitacao.atleta.first_name + " " + solicitacao.atleta.last_name : ""}</p>
                                                             <button
-                                                                onClick={() => { handleClickConfirmarFormacaoEquipe(solicitacao.id) }}
+                                                                onClick={() => { handleClickConfirmarFormacaoEquipe(solicitacao) }}
                                                                 type="button"
                                                                 className="mt-4 group relative py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                                             >
                                                                 Confirmar
                                                             </button>
                                                             <button
-                                                                onClick={() => { handleClickRejeitarFormacaoEquipe(solicitacao.id) }}
+                                                                onClick={() => { handleClickRejeitarFormacaoEquipe(solicitacao) }}
                                                                 type="button"
                                                                 className="mt-4 ml-2 group relative py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                                             >

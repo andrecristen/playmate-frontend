@@ -19,6 +19,7 @@ import {
     getEquipesAtletaTecnico,
     getCompeticao,
     postEquipeAtleta,
+    putEquipeAtleta,
     getCategoria,
 } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
@@ -208,10 +209,10 @@ export const PublicProvider = ({ children }) => {
                 var data = response.data;
                 await data.forEach(async (value) => {
                     value.solicitacoes = await consultarEquipeAtletas(value.equipe, false);
-                    value.atleta =  await consultarUsuario(value.atleta);
-                    value.equipe =  await consultarEquipe(value.equipe);
-                    value.equipe.competicao =  await consultarCompeticao(value.equipe.competicao);
-                    value.equipe.categoria =  await consultarCategoria(value.equipe.categoria);
+                    value.atleta = await consultarUsuario(value.atleta);
+                    value.equipe = await consultarEquipe(value.equipe);
+                    value.equipe.competicao = await consultarCompeticao(value.equipe.competicao);
+                    value.equipe.categoria = await consultarCategoria(value.equipe.categoria);
                 });
                 return data;
             } else {
@@ -329,6 +330,23 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
+    const alterarSituacaoEquipeAtleta = async (equipeAtleta, situacao) => {
+        equipeAtleta.situacao = situacao;
+        const response = await putEquipeAtleta(equipeAtleta);
+        if (response.status == 200 || response.status == 201) {
+            successMessage('Alterado com sucesso.');
+            return true;
+        } else {
+            errorMessage('Não foi possível realizar a alteração cadastro.');
+            if (response.data) {
+                Object.entries(response.data).map((erro) => {
+                    infoMessage(erro[1][0]);
+                });
+            }
+            return false;
+        }
+    }
+
     return (
         <PublicContext.Provider
             value={{
@@ -344,6 +362,7 @@ export const PublicProvider = ({ children }) => {
                 getMeusAtletas,
                 getMeusClubes,
                 getMinhasEquipesAtletas,
+                alterarSituacaoEquipeAtleta,
                 novoClube,
                 alterarClube,
                 getEstadosList,

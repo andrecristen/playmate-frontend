@@ -170,3 +170,11 @@ export const postEquipeAtleta = async (equipeAtleta) => {
         return error.response;
     });
 }
+
+export const putEquipeAtleta = async (equipeAtleta) => {
+    return api.put('/v1/equipe_atleta/' + equipeAtleta.id + '/', equipeAtleta).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
