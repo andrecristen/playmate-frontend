@@ -23,7 +23,6 @@ export default function SolicitationsPage() {
         getMinhasEquipesAtletas([]);
         getMinhasEquipesAtletas().then((data) => {
             setMinhasEquipesList(data);
-            console.log(data);
             setTimeout(() => {
                 forceUpdate();
             }, 500);

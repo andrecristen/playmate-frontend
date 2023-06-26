@@ -8,6 +8,10 @@ export default class Solicitations {
         return 2;
     }
 
+    get SITUACAO_SOLICITADO() {
+        return 3;
+    }
+
     get SEXO_LIST() {
         return {
             1: "Aprovado",

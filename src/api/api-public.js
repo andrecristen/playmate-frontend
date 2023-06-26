@@ -143,10 +143,13 @@ export const putClube = async (clube) => {
     });
 }
 
-export const getEquipeAtleta = async (equipeId, fixo) => {
+export const getEquipeAtleta = async (equipeId, fixo, situacao) => {
     var filter = "?equipe_id=" + equipeId;
     if (fixo && fixo != "null" || (fixo === false)) {
         filter += "&fixo=" + fixo;
+    }
+    if (situacao) {
+        filter += "&situacao=" + situacao;
     }
     return api.get('/v1/equipe_atleta/' + filter).then((result) => {
         return result;

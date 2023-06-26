@@ -25,6 +25,7 @@ import {
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
 import User from "../models/User";
+import Solicitations from "../models/Solicitations";
 
 export const PublicContext = createContext();
 
@@ -161,8 +162,8 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
-    const consultarEquipeAtletas = async (equipeID, fixo) => {
-        const response = await getEquipeAtleta(equipeID, fixo);
+    const consultarEquipeAtletas = async (equipeID, fixo, situacao) => {
+        const response = await getEquipeAtleta(equipeID, fixo, situacao);
         if (response.status == 200 && response.data && response.data[0]) {
             var data = response.data;
             data.map(async (value, index) => {
@@ -203,12 +204,13 @@ export const PublicProvider = ({ children }) => {
 
     const getMinhasEquipesAtletas = async () => {
         const user = loadUser();
+        const solicitations = new Solicitations();
         if (user) {
             const response = await getEquipesAtletaTecnico(user.id);
             if (response.status == 200 && response.data && response.data) {
                 var data = response.data;
                 await data.forEach(async (value) => {
-                    value.solicitacoes = await consultarEquipeAtletas(value.equipe, false);
+                    value.solicitacoes = await consultarEquipeAtletas(value.equipe, false, solicitations.SITUACAO_SOLICITADO);
                     value.atleta = await consultarUsuario(value.atleta);
                     value.equipe = await consultarEquipe(value.equipe);
                     value.equipe.competicao = await consultarCompeticao(value.equipe.competicao);
