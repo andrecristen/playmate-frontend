@@ -64,6 +64,10 @@ export default function TeamsPage() {
     }
 
     const handleClickSolicitarFormacaoEquipe = async (id) => {
+        if (!tecnicoLogado) {
+            navigate("/login");
+            return;
+        }
         setFormDataSolicitacao([]);
         let equipe = await getEquipe(id);
         setEquipeSolicitacao(equipe);

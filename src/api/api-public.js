@@ -47,6 +47,14 @@ export const getCompeticoes = async () => {
     });
 }
 
+export const getCompeticao = async (competicaoID) => {
+    return api.get('/v1/competicao/' + competicaoID + '/').then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
 export const getEquipesIncompletas = async (competicaoID, categoriaId) => {
     var filters = "?completed=false";
     if (competicaoID && competicaoID != "null") {
@@ -56,6 +64,14 @@ export const getEquipesIncompletas = async (competicaoID, categoriaId) => {
         filters += "&categoria_id=" + categoriaId;
     }
     return api.get('/v1/equipe/' + filters).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
+export const getEquipe = async (equipeID) => {
+    return api.get('/v1/equipe/' + equipeID + '/').then((result) => {
         return result;
     }).catch((error) => {
         return error.response;
@@ -73,6 +89,14 @@ export const getAtletasByTecnico = async (tecnicoID) => {
 
 export const getCategorias = async () => {
     return api.get('/v1/categoria/').then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+
+export const getCategoria = async (categoriaID) => {
+    return api.get('/v1/categoria/' + categoriaID + '/').then((result) => {
         return result;
     }).catch((error) => {
         return error.response;
@@ -121,9 +145,17 @@ export const putClube = async (clube) => {
 
 export const getEquipeAtleta = async (equipeId, fixo) => {
     var filter = "?equipe_id=" + equipeId;
-    if (fixo && fixo != "null") {
+    if (fixo && fixo != "null" || (fixo === false)) {
         filter += "&fixo=" + fixo;
     }
+    return api.get('/v1/equipe_atleta/' + filter).then((result) => {
+        return result;
+    }).catch((error) => {
+        return error.response;
+    });
+}
+export const getEquipesAtletaTecnico = async (tecnicoID) => {
+    var filter = "?atleta__clube__tecnico_id=" + tecnicoID + "&fixo=true";
     return api.get('/v1/equipe_atleta/' + filter).then((result) => {
         return result;
     }).catch((error) => {

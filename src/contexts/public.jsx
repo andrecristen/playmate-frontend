@@ -14,8 +14,12 @@ import {
     getClubes,
     postClube,
     putClube,
+    getEquipe,
     getEquipeAtleta,
+    getEquipesAtletaTecnico,
+    getCompeticao,
     postEquipeAtleta,
+    getCategoria,
 } from "../api/api-public"
 import { errorMessage, infoMessage, successMessage } from "../components/UI/notify";
 import { useNavigate } from "react-router-dom";
@@ -156,6 +160,68 @@ export const PublicProvider = ({ children }) => {
         }
     };
 
+    const consultarEquipeAtletas = async (equipeID, fixo) => {
+        const response = await getEquipeAtleta(equipeID, fixo);
+        if (response.status == 200 && response.data && response.data[0]) {
+            var data = response.data;
+            data.map(async (value, index) => {
+                data[index].atleta = await consultarUsuario(value.atleta);
+            });
+            return data;
+        } else {
+            return null;
+        }
+    };
+
+    const consultarEquipe = async (equipeID) => {
+        const response = await getEquipe(equipeID);
+        if (response.status == 200 && response.data && response.data) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    const consultarCompeticao = async (competicaoID) => {
+        const response = await getCompeticao(competicaoID);
+        if (response.status == 200 && response.data && response.data) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    const consultarCategoria = async (categoriaID) => {
+        const response = await getCategoria(categoriaID);
+        if (response.status == 200 && response.data && response.data) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    const getMinhasEquipesAtletas = async () => {
+        const user = loadUser();
+        if (user) {
+            const response = await getEquipesAtletaTecnico(user.id);
+            if (response.status == 200 && response.data && response.data) {
+                var data = response.data;
+                await data.forEach(async (value) => {
+                    value.solicitacoes = await consultarEquipeAtletas(value.equipe, false);
+                    value.atleta =  await consultarUsuario(value.atleta);
+                    value.equipe =  await consultarEquipe(value.equipe);
+                    value.equipe.competicao =  await consultarCompeticao(value.equipe.competicao);
+                    value.equipe.categoria =  await consultarCategoria(value.equipe.categoria);
+                });
+                return data;
+            } else {
+                return null;
+            }
+        } else {
+            infoMessage("Não localizado usuário para carregamento das informações.");
+        }
+    }
+
     const criarSolicitacaoEquipeAtleta = async (equipeID, atletaID) => {
         let equipeAtleta = {
             "situacao": 3,//Solicitado
@@ -277,6 +343,7 @@ export const PublicProvider = ({ children }) => {
                 getCategoriasList,
                 getMeusAtletas,
                 getMeusClubes,
+                getMinhasEquipesAtletas,
                 novoClube,
                 alterarClube,
                 getEstadosList,
